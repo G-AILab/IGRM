@@ -53,9 +53,9 @@ def create_node(df, mode, df_y):
         nrow, ncol = df.shape
         feature_ind = np.array(range(ncol))
         feature_node = np.zeros((ncol,ncol))
-        feature_node[np.arange(ncol), feature_ind] = 1
-        sample_node = [[1]*ncol for i in range(nrow)]
-        node = sample_node + feature_node.tolist()
+        feature_node[np.arange(ncol), feature_ind] = 1 # nrow x  ncol 
+        sample_node = [[1]*ncol for i in range(nrow)] # nrow x  ncol
+        node = sample_node + feature_node.tolist()  # nrow x  ncol 
     elif mode == 1: # onehot sample and feature node
         nrow, ncol = df.shape
         feature_ind = np.array(range(ncol))
@@ -65,9 +65,10 @@ def create_node(df, mode, df_y):
         sample_node[:,0] = 1
         node = sample_node.tolist() + feature_node.tolist()
     return node
-
 def create_edge(df):
+
     n_row, n_col = df.shape
+    # create fully connected bidirectional graph
     edge_start = []
     edge_end = []
     for x in range(n_row):
@@ -211,9 +212,11 @@ def get_cos(index0, index1, mask, features):
     return 1-cos
 
 def get_edge_with_random(x, confidence, num_edge = None):
+    # 对于NxN 的图 随机 generate N 那么多的边
+    # 
     add_edge_start = []
     add_edge_end = []
-    index = [i for i in range(x.shape[0])]
+    index = [i for i in range(x.shape[0])]  
     edge_index = []
     while(len(edge_index) < num_edge*2):
         edge = random.sample(index,2)
@@ -239,6 +242,7 @@ def get_data(df_X, df_y, node_mode, train_edge_prob, split_sample_ratio, split_b
         x_scaled = min_max_scaler.fit_transform(x)
         df_X = pd.DataFrame(x_scaled)
 
+    # created fully connected grpah
     edge_start, edge_end = create_edge(df_X)
     edge_index = torch.tensor([edge_start, edge_end], dtype=int)
     edge_attr = torch.tensor(create_edge_attr(df_X), dtype=torch.float)

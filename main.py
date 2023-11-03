@@ -13,8 +13,9 @@ from utils.utils import auto_select_gpu
 import pickle
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser()# domain
     parser.add_argument('--model_types', type=str, default='EGSAGE_EGSAGE_EGSAGE')
+    parser.add_argument('--domain', type=str, default='uci')
     parser.add_argument('--post_hiddens', type=str, default=None,) # default to be 1 hidden of node_dim
     parser.add_argument('--concat_states', action='store_true', default=False)
     parser.add_argument('--norm_embs', type=str, default=None,) # default to be all true
@@ -25,6 +26,7 @@ def main():
     parser.add_argument('--gnn_activation', type=str, default='relu')
     parser.add_argument('--impute_hiddens', type=str, default='64')
     parser.add_argument('--impute_activation', type=str, default='relu')
+    parser.add_argument('--node_mode', type=int, default=0)  # 0: feature onehot, sample all 1; 1: all onehot
     parser.add_argument('--epochs', type=int, default=20000)
     parser.add_argument('--opt', type=str, default='adam')
     parser.add_argument('--opt_scheduler', type=str, default='none')
@@ -45,6 +47,23 @@ def main():
     parser.add_argument('--transfer_dir', type=str, default=None)
     parser.add_argument('--transfer_extra', type=str, default='')
     parser.add_argument('--mode', type=str, default='train') # debug
+    
+    
+    
+    parser.add_argument('--train_edge', type=float, default=0.7)
+    parser.add_argument('--split_sample', type=float, default=0.)
+    parser.add_argument('--split_by', type=str, default='y') # 'y', 'random'
+    parser.add_argument('--split_train', action='store_true', default=False)
+    parser.add_argument('--split_test', action='store_true', default=False)
+    parser.add_argument('--train_y', type=float, default=0.7)
+
+    parser.add_argument('--method', type=str, default='mean')
+    parser.add_argument('--level', type=int, default=0)
+
+    parser.add_argument('--best_level', action='store_true', default=False)
+    parser.add_argument('--comment', type=str, default='v1')
+
+    
     subparsers = parser.add_subparsers()
     add_uci_subparser(subparsers)
     args = parser.parse_args()

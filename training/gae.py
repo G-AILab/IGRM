@@ -10,7 +10,6 @@ import numpy as np
 import math
 from sklearn import preprocessing
 import time
-import tensorflow as tf
 
 
 class VGAE(nn.Module):
